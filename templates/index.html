@@ -360,8 +360,8 @@
         // Common configuration for all tables
         const commonConfig = {
             responsive: true,
-            // DOM configuration with length menu (l) moved to the bottom with pagination info (i) and pagination (p)
-            dom: 'Bfrt<"bottom"lip>',
+            // DOM configuration with SearchPanes (P) and length menu (l) moved to the bottom with pagination info (i) and pagination (p)
+            dom: 'BPfrt<"bottom"lip>',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             // Enhanced row count options - default to 10 for consistency
             pageLength: 10,
@@ -370,6 +370,20 @@
             // Enable individual column filtering
             orderCellsTop: true,
             fixedHeader: true,
+            // Configure SearchPanes to be more compact and user-friendly
+            searchPanes: {
+                layout: 'columns-3',
+                initCollapsed: true,
+                cascadePanes: true,
+                dtOpts: {
+                    select: {
+                        style: 'multi'
+                    },
+                    paging: false,
+                    pagingType: 'numbers',
+                    searching: true
+                }
+            },
             // Add event listener for page length change
             drawCallback: function() {
                 const api = this.api();
