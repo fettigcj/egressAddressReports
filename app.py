@@ -32,7 +32,12 @@ def index():
 
     has_cisco_files = os.path.exists(cisco_csv) and os.path.exists(cisco_xlsx)
 
-    return render_template('index.html', reports=reports, has_prisma_files=has_prisma_files, has_cisco_files=has_cisco_files)
+    # Check if AzurePIPs file exists
+    azure_csv = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
+
+    has_azure_files = os.path.exists(azure_csv)
+
+    return render_template('index.html', reports=reports, has_prisma_files=has_prisma_files, has_cisco_files=has_cisco_files, has_azure_files=has_azure_files)
 
 @app.route('/report/<filename>')
 def view_report(filename):
@@ -124,6 +129,32 @@ def cisco_public_ips():
     except Exception as e:
         return render_template('error.html', error=str(e))
 
+@app.route('/azure_public_ips')
+def azure_public_ips():
+    """Display the Azure Public IP Objects data with download link for CSV"""
+    csv_path = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
+
+    # Check if file exists
+    if not os.path.exists(csv_path):
+        return redirect(url_for('index'))
+
+    try:
+        # Get file modification time
+        csv_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(csv_path)).strftime('%b %d %Y %H:%M:%S')
+
+        # Read CSV file
+        csv_data = []
+        with open(csv_path, 'r') as file:
+            csv_reader = csv.reader(file)
+            for row in csv_reader:
+                csv_data.append(row)
+
+        return render_template('azure_public_ips.html',
+                              csv_data=csv_data,
+                              csv_mod_time=csv_mod_time)
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+
 @app.route('/download/<file_type>')
 def download_file(file_type):
     """Serve the file for download"""
@@ -144,6 +175,9 @@ def download_file(file_type):
     elif file_type == 'cisco_log':
         file_path = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
+    elif file_type == 'azure_csv':
+        file_path = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
+        return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
 
 if __name__ == '__main__':
     app.run(debug=True)

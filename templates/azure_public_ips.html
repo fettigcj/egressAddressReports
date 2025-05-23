@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}Azure Public IP Objects{% endblock %}
+
+{% block header %}Azure Public IP Objects Reports{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Reports List</a>
+
+    <div class="report-content">
+        <center>
+            <h1>Latest Azure Public IP Objects data:</h1>
+            <div align="center">
+                <a href="{{ url_for('download_file', file_type='azure_csv') }}">Azure Public IP Objects CSV file was last modified {{ csv_mod_time }} (UTC)</a>
+                <hr>
+            </div>
+            <table>
+                {% for row in csv_data %}
+                    <tr>
+                        {% if loop.index0 == 0 %}
+                            <th>Index</th>
+                            {% for cell in row %}
+                                <th>{{ cell }}</th>
+                            {% endfor %}
+                        {% else %}
+                            <td>{{ loop.index0 }}</td>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </center>
+    </div>
+{% endblock %}
