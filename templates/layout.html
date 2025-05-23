@@ -175,6 +175,33 @@
             max-height: 400px;
             overflow-y: auto;
         }
+
+        /* Horizontal layout for View All section */
+        .horizontal-reports-container {
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            gap: 20px;
+            padding-bottom: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .horizontal-report {
+            min-width: 400px;
+            width: 33%;
+            flex-shrink: 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Make sure tables in horizontal reports don't overflow */
+        .horizontal-report .table-responsive {
+            max-width: 100%;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>

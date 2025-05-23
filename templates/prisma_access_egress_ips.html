@@ -9,51 +9,47 @@
 
     <div class="report-content">
         <center>
-            <p>Latest Prisma Access egress IP data:</p>
+            <h1>Latest Prisma Access egress IP data:</h1>
             <table border="1" width="90%">
                 <tr>
-                    <td align="center" class="table-header">CSV Format</td>
-                    <td align="center" class="table-header">EDL Format</td>
+                    <td class="table-header"><h1>CSV Format</h1></td>
+                    <td class="table-header"><h1>EDL Format</h1></td>
                 </tr>
                 <tr>
-                    <td width="50%" valign="top">
-                        <a href="{{ url_for('download_file', file_type='csv') }}">Egress IP CSV file was last modified {{ csv_mod_time }} (UTC)</a><br><hr>
-                        <div class="table-container">
-                            <table>
-                                {% for row in csv_data %}
-                                    <tr>
-                                        {% if loop.index0 == 0 %}
-                                            <th>Index</th>
-                                            {% for cell in row %}
-                                                <th>{{ cell }}</th>
-                                            {% endfor %}
-                                        {% else %}
-                                            <td>{{ loop.index0 }}</td>
-                                            {% for cell in row %}
-                                                <td>{{ cell }}</td>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </td>
-                    <td width="50%" valign="top">
-                        <a href="{{ url_for('download_file', file_type='edl') }}">Egress IP EDL file was last modified {{ edl_mod_time }} (UTC)</a><br><hr>
-                        <div class="table-container">
-                            <table>
+                    <td width="50%" valign="top" align="center">
+                        <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ csv_mod_time }} (UTC)</a><br><hr>
+                        <table>
+                            {% for row in csv_data %}
                                 <tr>
-                                    <th>#</th>
-                                    <th>IP Address</th>
+                                    {% if loop.index0 == 0 %}
+                                        <th>Index</th>
+                                        {% for cell in row %}
+                                            <th>{{ cell }}</th>
+                                        {% endfor %}
+                                    {% else %}
+                                        <td>{{ loop.index0 }}</td>
+                                        {% for cell in row %}
+                                            <td>{{ cell }}</td>
+                                        {% endfor %}
+                                    {% endif %}
                                 </tr>
-                                {% for ip in edl_data %}
-                                    <tr>
-                                        <td>{{ loop.index }}</td>
-                                        <td>{{ ip }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
+                            {% endfor %}
+                        </table>
+                    </td>
+                    <td width="50%" valign="top" align="center">
+                        <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ edl_mod_time }} (UTC)</a><br><hr>
+                        <table>
+                            <tr>
+                                <th>#</th>
+                                <th>IP Address</th>
+                            </tr>
+                            {% for ip in edl_data %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ ip }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </td>
                 </tr>
             </table>

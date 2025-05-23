@@ -161,43 +161,102 @@
         <div id="all-reports" class="report-section">
             <h2>All Reports</h2>
 
-            {% if prisma_data.has_files %}
-                <div class="embedded-report">
-                    <h3>Prisma Access Egress IPs</h3>
-                    <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
-                    <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
-                    <div align="center">
-                        <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Download CSV</a> | 
-                        <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Download EDL</a>
+            <div class="horizontal-reports-container">
+                {% if prisma_data.has_files %}
+                    <div class="embedded-report horizontal-report">
+                        <h3>Prisma Access Egress IPs</h3>
+                        <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
+                        <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
+                        <div align="center">
+                            <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Download CSV</a> | 
+                            <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Download EDL</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                {% for row in prisma_data.csv_data %}
+                                    <tr>
+                                        {% if loop.index0 == 0 %}
+                                            <th>Index</th>
+                                            {% for cell in row %}
+                                                <th>{{ cell }}</th>
+                                            {% endfor %}
+                                        {% else %}
+                                            <td>{{ loop.index0 }}</td>
+                                            {% for cell in row %}
+                                                <td>{{ cell }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
 
-            {% if cisco_data.has_files %}
-                <div class="embedded-report">
-                    <h3>Cisco Public IPs</h3>
-                    <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
-                    <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
-                    <div align="center">
-                        <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Download CSV</a> | 
-                        <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Download XLSX</a>
-                        {% if cisco_data.has_log_file %}
-                        | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Download Log</a>
-                        {% endif %}
+                {% if cisco_data.has_files %}
+                    <div class="embedded-report horizontal-report">
+                        <h3>Cisco Public IPs</h3>
+                        <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
+                        <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
+                        <div align="center">
+                            <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Download CSV</a> | 
+                            <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Download XLSX</a>
+                            {% if cisco_data.has_log_file %}
+                            | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Download Log</a>
+                            {% endif %}
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                {% for row in cisco_data.csv_data %}
+                                    <tr>
+                                        {% if loop.index0 == 0 %}
+                                            <th>Index</th>
+                                            {% for cell in row %}
+                                                <th>{{ cell }}</th>
+                                            {% endfor %}
+                                        {% else %}
+                                            <td>{{ loop.index0 }}</td>
+                                            {% for cell in row %}
+                                                <td>{{ cell }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
 
-            {% if azure_data.has_files %}
-                <div class="embedded-report">
-                    <h3>Azure Public IP Objects</h3>
-                    <p>View the Azure Public IP Objects data in CSV format.</p>
-                    <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
-                    <div align="center">
-                        <a href="{{ url_for('download_file', file_type='azure_csv') }}">Download CSV</a>
+                {% if azure_data.has_files %}
+                    <div class="embedded-report horizontal-report">
+                        <h3>Azure Public IP Objects</h3>
+                        <p>View the Azure Public IP Objects data in CSV format.</p>
+                        <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
+                        <div align="center">
+                            <a href="{{ url_for('download_file', file_type='azure_csv') }}">Download CSV</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                {% for row in azure_data.csv_data %}
+                                    <tr>
+                                        {% if loop.index0 == 0 %}
+                                            <th>Index</th>
+                                            {% for cell in row %}
+                                                <th>{{ cell }}</th>
+                                            {% endfor %}
+                                        {% else %}
+                                            <td>{{ loop.index0 }}</td>
+                                            {% for cell in row %}
+                                                <td>{{ cell }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 
