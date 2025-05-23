@@ -39,16 +39,34 @@
 {% block datatables_script %}
 <script>
     $(document).ready(function() {
-        $('#all-ips-table').DataTable({
+        // Common configuration for DataTables
+        const tableConfig = {
             responsive: true,
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
+            // Include SearchPanes (P) and SearchBuilder (Q) in the DOM
+            dom: 'BPQlfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            // Enhanced row count options
             pageLength: 25,
-            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-            order: [[0, 'asc']]
-        });
+            lengthMenu: [[5, 10, 25, 50, 100, 250, 500, -1], [5, 10, 25, 50, 100, 250, 500, "All"]],
+            order: [[0, 'asc']],
+            // Enable column filtering
+            searchPanes: {
+                layout: 'columns-3',
+                initCollapsed: true,
+                cascadePanes: true,
+                dtOpts: {
+                    select: {
+                        style: 'multi'
+                    }
+                }
+            },
+            // Enable search builder for advanced filtering
+            searchBuilder: {
+                columns: ':not(:first-child)' // Exclude the index column
+            }
+        };
+
+        $('#all-ips-table').DataTable(tableConfig);
     });
 </script>
 {% endblock %}
