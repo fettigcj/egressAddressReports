@@ -3,3 +3,4 @@ reports/*
 .venv/
 .idea/
 *.bak
+!reports/putreportshere.txt
