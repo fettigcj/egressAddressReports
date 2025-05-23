@@ -405,14 +405,16 @@
                     icon.style.marginRight = '3px';
                     icon.style.fontSize = '12px';
                     icon.style.cursor = 'pointer';
+                    icon.title = 'Filter ' + title;
 
-                    // Create input element
+                    // Create input element (hidden initially)
                     var input = document.createElement('input');
                     input.placeholder = 'Filter ' + title;
                     input.style.width = 'calc(100% - 25px)';
                     input.style.padding = '2px';
                     input.style.boxSizing = 'border-box';
                     input.style.fontSize = '11px';
+                    input.style.display = 'none'; // Hide input initially
 
                     // Create dropdown container
                     var dropdownContainer = document.createElement('div');
@@ -430,86 +432,63 @@
                     // Get unique values for this column
                     var values = column.data().unique().sort().toArray();
 
-                    // Create checkboxes for each unique value
+                    // Create items for each unique value
                     values.forEach(function(value) {
                         if (!value) return;
 
                         var item = document.createElement('div');
+                        item.className = 'dropdown-item';
+                        item.textContent = value;
                         item.style.padding = '3px 5px';
                         item.style.cursor = 'pointer';
                         item.style.borderBottom = '1px solid #f0f0f0';
+                        item.style.fontSize = '11px';
 
-                        var checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.value = value;
-                        checkbox.style.marginRight = '5px';
+                        // Highlight on hover
+                        item.addEventListener('mouseover', function() {
+                            this.style.backgroundColor = '#f0f0f0';
+                        });
+                        item.addEventListener('mouseout', function() {
+                            this.style.backgroundColor = '';
+                        });
 
-                        var label = document.createElement('label');
-                        label.appendChild(document.createTextNode(value));
-                        label.style.fontSize = '11px';
-                        label.style.cursor = 'pointer';
+                        // Add click event to auto-complete search
+                        item.addEventListener('click', function() {
+                            input.value = value;
+                            column.search(value).draw();
+                            dropdownContainer.style.display = 'none';
+                        });
 
-                        item.appendChild(checkbox);
-                        item.appendChild(label);
                         dropdownContainer.appendChild(item);
-
-                        // Add event listener to checkbox
-                        checkbox.addEventListener('change', function() {
-                            updateFilter();
-                        });
-
-                        // Add event listener to label for easier clicking
-                        label.addEventListener('click', function(e) {
-                            checkbox.checked = !checkbox.checked;
-                            updateFilter();
-                            e.preventDefault();
-                        });
                     });
 
-                    // Function to update the filter based on selected checkboxes
-                    function updateFilter() {
-                        var selectedValues = [];
-                        dropdownContainer.querySelectorAll('input:checked').forEach(function(cb) {
-                            selectedValues.push(cb.value);
-                        });
-
-                        if (selectedValues.length === 0) {
-                            column.search('').draw();
-                            input.value = '';
-                        } else {
-                            // Create regex for OR search
-                            var regex = selectedValues.map(function(val) {
-                                return '^' + val.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '$';
-                            }).join('|');
-                            column.search(regex, true, false).draw();
-
-                            // Update input to show selected values
-                            if (selectedValues.length <= 2) {
-                                input.value = selectedValues.join(', ');
-                            } else {
-                                input.value = selectedValues.length + ' selected';
-                            }
-                        }
-                    }
-
-                    // Toggle dropdown on icon click
+                    // Toggle dropdown and input visibility on icon click
                     icon.addEventListener('click', function() {
-                        dropdownContainer.style.display = dropdownContainer.style.display === 'none' ? 'block' : 'none';
+                        var isVisible = input.style.display !== 'none';
+
+                        if (isVisible) {
+                            // Hide input and dropdown
+                            input.style.display = 'none';
+                            dropdownContainer.style.display = 'none';
+                        } else {
+                            // Show input and dropdown
+                            input.style.display = '';
+                            dropdownContainer.style.display = 'block';
+                            input.focus(); // Focus the input for immediate typing
+                        }
                     });
 
                     // Add text input filtering
                     input.addEventListener('keyup', function() {
-                        // Clear checkboxes when typing
-                        dropdownContainer.querySelectorAll('input:checked').forEach(function(cb) {
-                            cb.checked = false;
-                        });
-
                         // Filter by input text
                         column.search(this.value).draw();
 
+                        // Show dropdown when typing
+                        dropdownContainer.style.display = 'block';
+
                         // Filter dropdown items based on input
                         var filterText = this.value.toLowerCase();
-                        dropdownContainer.querySelectorAll('div').forEach(function(item) {
+                        dropdownContainer.querySelectorAll('.dropdown-item').forEach(function(item) {
                             var itemText = item.textContent.toLowerCase();
                             item.style.display = itemText.includes(filterText) ? 'block' : 'none';
                         });
@@ -519,6 +498,11 @@
                     document.addEventListener('click', function(e) {
                         if (!filterContainer.contains(e.target)) {
                             dropdownContainer.style.display = 'none';
+
+                            // Only hide input if it's empty
+                            if (input.value === '') {
+                                input.style.display = 'none';
+                            }
                         }
                     });
 
