@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}Prisma Access Egress IPs{% endblock %}
+
+{% block header %}Prisma Access Egress IP Reports{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Reports List</a>
+
+    <div class="report-content">
+        <center>
+            <p>Latest Prisma Access egress IP data:</p>
+            <table border="1" width="90%">
+                <tr>
+                    <td align="center" class="table-header">CSV Format</td>
+                    <td align="center" class="table-header">EDL Format</td>
+                </tr>
+                <tr>
+                    <td width="50%" valign="top">
+                        <a href="{{ url_for('download_file', file_type='csv') }}">Egress IP CSV file was last modified {{ csv_mod_time }} (UTC)</a><br><hr>
+                        <div class="table-container">
+                            <table>
+                                {% for row in csv_data %}
+                                    <tr>
+                                        {% if loop.index0 == 0 %}
+                                            <th>Index</th>
+                                            {% for cell in row %}
+                                                <th>{{ cell }}</th>
+                                            {% endfor %}
+                                        {% else %}
+                                            <td>{{ loop.index0 }}</td>
+                                            {% for cell in row %}
+                                                <td>{{ cell }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </td>
+                    <td width="50%" valign="top">
+                        <a href="{{ url_for('download_file', file_type='edl') }}">Egress IP EDL file was last modified {{ edl_mod_time }} (UTC)</a><br><hr>
+                        <div class="table-container">
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>IP Address</th>
+                                </tr>
+                                {% for ip in edl_data %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ ip }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </div>
+{% endblock %}

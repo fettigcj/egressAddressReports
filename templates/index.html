@@ -5,6 +5,16 @@
 {% block header %}Available Reports{% endblock %}
 
 {% block content %}
+    {% if has_prisma_files %}
+        <div class="special-report">
+            <h2>Prisma Access Egress IPs</h2>
+            <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
+            <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">View Prisma Access Egress IPs</a>
+        </div>
+        <hr>
+    {% endif %}
+
+    <h2>Text Reports</h2>
     {% if reports %}
         <p>Select a report to view:</p>
         <ul class="report-list">
@@ -15,6 +25,6 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p>No reports available. Please add text files to the reports directory.</p>
+        <p>No text reports available. Please add text files to the reports directory.</p>
     {% endif %}
 {% endblock %}
