@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block header %}Error{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Reports List</a>
+    
+    <div class="error">
+        <h2>An error occurred</h2>
+        <p>{{ error }}</p>
+    </div>
+{% endblock %}
