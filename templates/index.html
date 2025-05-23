@@ -25,7 +25,12 @@
         <!-- Prisma Access Egress IPs Report -->
         {% if prisma_data.has_files %}
             <div id="prisma-report" class="report-section active">
-                <h2>Prisma Access Egress IPs</h2>
+                <h2>
+                    Prisma Access Egress IPs
+                    <a href="/prismaaccess" class="direct-link" title="Bookmark this link for direct access">
+                        <span class="direct-link-icon">🔗</span>Direct Link
+                    </a>
+                </h2>
 
                 <div class="embedded-report">
                     <h3>Latest Prisma Access egress IP data:</h3>
@@ -90,7 +95,12 @@
         <!-- Cisco Public IPs Report -->
         {% if cisco_data.has_files %}
             <div id="cisco-report" class="report-section">
-                <h2>Cisco Public IPs</h2>
+                <h2>
+                    Cisco Public IPs
+                    <a href="/cisco" class="direct-link" title="Bookmark this link for direct access">
+                        <span class="direct-link-icon">🔗</span>Direct Link
+                    </a>
+                </h2>
 
                 <div class="embedded-report">
                     <h3>Latest Cisco Public IP data:</h3>
@@ -131,7 +141,12 @@
         <!-- Azure Public IP Objects Report -->
         {% if azure_data.has_files %}
             <div id="azure-report" class="report-section">
-                <h2>Azure Public IP Objects</h2>
+                <h2>
+                    Azure Public IP Objects
+                    <a href="/azure" class="direct-link" title="Bookmark this link for direct access">
+                        <span class="direct-link-icon">🔗</span>Direct Link
+                    </a>
+                </h2>
 
                 <div class="embedded-report">
                     <h3>Latest Azure Public IP Objects data:</h3>
@@ -167,7 +182,12 @@
 
         <!-- All IPs View -->
         <div id="allips-report" class="report-section">
-            <h2>All IPs</h2>
+            <h2>
+                All IPs
+                <a href="/allips" class="direct-link" title="Bookmark this link for direct access">
+                    <span class="direct-link-icon">🔗</span>Direct Link
+                </a>
+            </h2>
 
             <div class="embedded-report">
                 <h3>Combined IP Addresses from All Sources</h3>
@@ -200,7 +220,12 @@
 
         <!-- All Reports View -->
         <div id="all-reports" class="report-section">
-            <h2>All Reports</h2>
+            <h2>
+                All Reports
+                <a href="/" class="direct-link" title="Bookmark this link for direct access">
+                    <span class="direct-link-icon">🔗</span>Direct Link
+                </a>
+            </h2>
 
             <div class="horizontal-reports-container">
                 {% if prisma_data.has_files %}
