@@ -7,15 +7,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            line-height: 1.4;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             color: #333;
         }
         .container {
-            max-width: 1200px;
+            max-width: none;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
             background-color: #f9f9f9;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -45,7 +45,7 @@
         }
         .report-content {
             background-color: #fff;
-            padding: 20px;
+            padding: 10px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             white-space: pre-wrap;
@@ -53,7 +53,7 @@
         }
         .back-link {
             display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .error {
             color: #e74c3c;
@@ -84,12 +84,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
         th, td {
-            padding: 4px;
+            padding: 2px 3px;
             text-align: left;
             border: 1px solid #ddd;
+            font-size: 0.95em;
         }
         th {
             background-color: #f2f2f2;
@@ -99,33 +100,33 @@
             background-color: #f9f9f9;
         }
         .table-container {
-            margin-top: 20px;
+            margin-top: 8px;
             overflow-x: auto;
         }
         .table-header {
             background-color: #3498db;
             color: white;
-            padding: 10px;
+            padding: 5px;
             text-align: center;
             margin-bottom: 0;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
         }
         /* Navigation styles */
         .nav-buttons {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
         .nav-button {
             background-color: #f8f9fa;
             color: #3498db;
             border: 1px solid #ddd;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 0 3px;
+            border-radius: 3px;
             cursor: pointer;
             text-decoration: none;
             font-weight: bold;
@@ -140,10 +141,10 @@
             flex-direction: column;
         }
         .report-section {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
+            border-radius: 3px;
+            padding: 8px;
             display: none;
         }
         .report-section.active {
@@ -151,28 +152,30 @@
         }
         .report-section h2 {
             margin-top: 0;
+            margin-bottom: 5px;
             color: #2c3e50;
             border-bottom: 1px solid #3498db;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
         /* Embedded report styles */
         .embedded-report {
-            margin-top: 20px;
+            margin-top: 8px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
+            border-radius: 3px;
+            padding: 8px;
             background-color: #fff;
         }
         .embedded-report h3 {
             margin-top: 0;
+            margin-bottom: 5px;
             color: #2c3e50;
             border-bottom: 1px solid #3498db;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
         /* Responsive table container */
         .table-responsive {
             overflow-x: auto;
-            max-height: 400px;
+            max-height: none;
             overflow-y: auto;
         }
 
@@ -181,20 +184,20 @@
             display: flex;
             flex-direction: row;
             overflow-x: auto;
-            gap: 20px;
-            padding-bottom: 20px;
+            gap: 10px;
+            padding-bottom: 10px;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 8px;
         }
 
         .horizontal-report {
-            min-width: 400px;
+            min-width: 300px;
             width: 33%;
             flex-shrink: 0;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            padding: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         /* Make sure tables in horizontal reports don't overflow */

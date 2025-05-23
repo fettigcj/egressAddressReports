@@ -8,16 +8,16 @@
     <a href="{{ url_for('index') }}" class="back-link">← Back to Reports List</a>
 
     <div class="report-content">
-        <center>
-            <h1>Latest Cisco Public IP data:</h1>
-            <div align="center">
-                <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last modified {{ csv_mod_time }} (UTC)</a> | 
-                <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last modified {{ xlsx_mod_time }} (UTC)</a>
-                {% if has_log_file %}
-                | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Cisco Public IP Log file was last modified {{ log_mod_time }} (UTC)</a>
-                {% endif %}
-                <hr>
-            </div>
+        <h3>Latest Cisco Public IP data:</h3>
+        <div align="center">
+            <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last modified {{ csv_mod_time }} (UTC)</a> | 
+            <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last modified {{ xlsx_mod_time }} (UTC)</a>
+            {% if has_log_file %}
+            | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Cisco Public IP Log file was last modified {{ log_mod_time }} (UTC)</a>
+            {% endif %}
+        </div>
+        <hr style="margin:3px 0">
+        <div class="table-responsive">
             <table>
                 {% for row in csv_data %}
                     <tr>
@@ -35,6 +35,6 @@
                     </tr>
                 {% endfor %}
             </table>
-        </center>
+        </div>
     </div>
 {% endblock %}

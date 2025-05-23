@@ -25,7 +25,6 @@
         {% if prisma_data.has_files %}
             <div id="prisma-report" class="report-section active">
                 <h2>Prisma Access Egress IPs</h2>
-                <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
                 <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
 
                 <div class="embedded-report">
@@ -36,8 +35,8 @@
                             <td class="table-header"><h3>EDL Format</h3></td>
                         </tr>
                         <tr>
-                            <td width="50%" valign="top" align="center">
-                                <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ prisma_data.csv_mod_time }} (UTC)</a><br><hr>
+                            <td valign="top" align="center">
+                                <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ prisma_data.csv_mod_time }} (UTC)</a><hr style="margin:3px 0">
                                 <div class="table-responsive">
                                     <table>
                                         {% for row in prisma_data.csv_data %}
@@ -58,8 +57,8 @@
                                     </table>
                                 </div>
                             </td>
-                            <td width="50%" valign="top" align="center">
-                                <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ prisma_data.edl_mod_time }} (UTC)</a><br><hr>
+                            <td valign="top" align="center">
+                                <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ prisma_data.edl_mod_time }} (UTC)</a><hr style="margin:3px 0">
                                 <div class="table-responsive">
                                     <table>
                                         <tr>
@@ -85,7 +84,6 @@
         {% if cisco_data.has_files %}
             <div id="cisco-report" class="report-section">
                 <h2>Cisco Public IPs</h2>
-                <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
                 <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
 
                 <div class="embedded-report">
@@ -96,8 +94,8 @@
                         {% if cisco_data.has_log_file %}
                         | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Cisco Public IP Log file was last modified {{ cisco_data.log_mod_time }} (UTC)</a>
                         {% endif %}
-                        <hr>
                     </div>
+                    <hr style="margin:3px 0">
                     <div class="table-responsive">
                         <table>
                             {% for row in cisco_data.csv_data %}
@@ -125,15 +123,14 @@
         {% if azure_data.has_files %}
             <div id="azure-report" class="report-section">
                 <h2>Azure Public IP Objects</h2>
-                <p>View the Azure Public IP Objects data in CSV format.</p>
                 <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
 
                 <div class="embedded-report">
                     <h3>Latest Azure Public IP Objects data:</h3>
                     <div align="center">
                         <a href="{{ url_for('download_file', file_type='azure_csv') }}">Azure Public IP Objects CSV file was last modified {{ azure_data.csv_mod_time }} (UTC)</a>
-                        <hr>
                     </div>
+                    <hr style="margin:3px 0">
                     <div class="table-responsive">
                         <table>
                             {% for row in azure_data.csv_data %}
@@ -165,12 +162,12 @@
                 {% if prisma_data.has_files %}
                     <div class="embedded-report horizontal-report">
                         <h3>Prisma Access Egress IPs</h3>
-                        <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
                         <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
                         <div align="center">
                             <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Download CSV</a> | 
                             <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Download EDL</a>
                         </div>
+                        <hr style="margin:3px 0">
                         <div class="table-responsive">
                             <table>
                                 {% for row in prisma_data.csv_data %}
@@ -196,7 +193,6 @@
                 {% if cisco_data.has_files %}
                     <div class="embedded-report horizontal-report">
                         <h3>Cisco Public IPs</h3>
-                        <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
                         <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
                         <div align="center">
                             <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Download CSV</a> | 
@@ -205,6 +201,7 @@
                             | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Download Log</a>
                             {% endif %}
                         </div>
+                        <hr style="margin:3px 0">
                         <div class="table-responsive">
                             <table>
                                 {% for row in cisco_data.csv_data %}
@@ -230,11 +227,11 @@
                 {% if azure_data.has_files %}
                     <div class="embedded-report horizontal-report">
                         <h3>Azure Public IP Objects</h3>
-                        <p>View the Azure Public IP Objects data in CSV format.</p>
                         <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
                         <div align="center">
                             <a href="{{ url_for('download_file', file_type='azure_csv') }}">Download CSV</a>
                         </div>
+                        <hr style="margin:3px 0">
                         <div class="table-responsive">
                             <table>
                                 {% for row in azure_data.csv_data %}

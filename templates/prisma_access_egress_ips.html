@@ -8,16 +8,16 @@
     <a href="{{ url_for('index') }}" class="back-link">← Back to Reports List</a>
 
     <div class="report-content">
-        <center>
-            <h1>Latest Prisma Access egress IP data:</h1>
-            <table border="1" width="90%">
-                <tr>
-                    <td class="table-header"><h1>CSV Format</h1></td>
-                    <td class="table-header"><h1>EDL Format</h1></td>
-                </tr>
-                <tr>
-                    <td width="50%" valign="top" align="center">
-                        <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ csv_mod_time }} (UTC)</a><br><hr>
+        <h3>Latest Prisma Access egress IP data:</h3>
+        <table border="1" width="100%">
+            <tr>
+                <td class="table-header"><h3>CSV Format</h3></td>
+                <td class="table-header"><h3>EDL Format</h3></td>
+            </tr>
+            <tr>
+                <td valign="top" align="center">
+                    <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ csv_mod_time }} (UTC)</a><hr style="margin:3px 0">
+                    <div class="table-responsive">
                         <table>
                             {% for row in csv_data %}
                                 <tr>
@@ -35,9 +35,11 @@
                                 </tr>
                             {% endfor %}
                         </table>
-                    </td>
-                    <td width="50%" valign="top" align="center">
-                        <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ edl_mod_time }} (UTC)</a><br><hr>
+                    </div>
+                </td>
+                <td valign="top" align="center">
+                    <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ edl_mod_time }} (UTC)</a><hr style="margin:3px 0">
+                    <div class="table-responsive">
                         <table>
                             <tr>
                                 <th>#</th>
@@ -50,9 +52,9 @@
                                 </tr>
                             {% endfor %}
                         </table>
-                    </td>
-                </tr>
-            </table>
-        </center>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 {% endblock %}
