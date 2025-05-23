@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}Cisco Public IPs{% endblock %}
+
+{% block header %}Cisco Public IP Reports{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Reports List</a>
+
+    <div class="report-content">
+        <center>
+            <h1>Latest Cisco Public IP data:</h1>
+            <div align="center">
+                <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last modified {{ csv_mod_time }} (UTC)</a> | 
+                <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last modified {{ xlsx_mod_time }} (UTC)</a>
+                <hr>
+            </div>
+            <table>
+                {% for row in csv_data %}
+                    <tr>
+                        {% if loop.index0 == 0 %}
+                            <th>Index</th>
+                            {% for cell in row %}
+                                <th>{{ cell }}</th>
+                            {% endfor %}
+                        {% else %}
+                            <td>{{ loop.index0 }}</td>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </center>
+    </div>
+{% endblock %}
