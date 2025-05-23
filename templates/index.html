@@ -348,27 +348,57 @@
         // Common configuration for all tables
         const commonConfig = {
             responsive: true,
-            // Include SearchPanes (P) and SearchBuilder (Q) in the DOM
-            dom: 'BPQlfrtip',
+            // Simple DOM configuration with filter (f) and without SearchPanes (P) and SearchBuilder (Q)
+            dom: 'Blfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             // Enhanced row count options
             pageLength: 10,
             lengthMenu: [[5, 10, 25, 50, 100, 250, 500, -1], [5, 10, 25, 50, 100, 250, 500, "All"]],
             order: [[0, 'asc']],
-            // Enable column filtering
-            searchPanes: {
-                layout: 'columns-3',
-                initCollapsed: true,
-                cascadePanes: true,
-                dtOpts: {
-                    select: {
-                        style: 'multi'
-                    }
-                }
-            },
-            // Enable search builder for advanced filtering
-            searchBuilder: {
-                columns: ':not(:first-child)' // Exclude the index column
+            // Enable individual column filtering
+            orderCellsTop: true,
+            fixedHeader: true,
+            // Add individual column search functionality
+            initComplete: function() {
+                // Apply the column search to all columns except the first one (Index)
+                this.api().columns().every(function(index) {
+                    // Skip the first column (Index)
+                    if (index === 0) return;
+
+                    var column = this;
+                    var title = column.header().textContent;
+
+                    // Create filter container
+                    var filterContainer = document.createElement('div');
+                    filterContainer.className = 'filter-container';
+                    filterContainer.style.marginTop = '5px';
+
+                    // Create magnifying glass icon
+                    var icon = document.createElement('span');
+                    icon.innerHTML = '🔍';
+                    icon.style.marginRight = '3px';
+                    icon.style.fontSize = '12px';
+
+                    // Create input element
+                    var input = document.createElement('input');
+                    input.placeholder = 'Filter';
+                    input.style.width = 'calc(100% - 20px)';
+                    input.style.padding = '2px';
+                    input.style.boxSizing = 'border-box';
+                    input.style.fontSize = '11px';
+
+                    // Add icon and input to filter container
+                    filterContainer.appendChild(icon);
+                    filterContainer.appendChild(input);
+
+                    // Add filter container below the column header text
+                    $(column.header()).append(filterContainer);
+
+                    // Set up event listener for filtering
+                    $(input).on('keyup change', function() {
+                        column.search($(this).val(), false, false, true).draw();
+                    });
+                });
             }
         };
 
