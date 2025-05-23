@@ -18,43 +18,80 @@
                 <td valign="top" align="center">
                     <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ csv_mod_time }} (UTC)</a><hr style="margin:3px 0">
                     <div class="table-responsive">
-                        <table>
-                            {% for row in csv_data %}
+                        <table id="prisma-csv-table" class="display nowrap" style="width:100%">
+                            <thead>
                                 <tr>
-                                    {% if loop.index0 == 0 %}
-                                        <th>Index</th>
-                                        {% for cell in row %}
-                                            <th>{{ cell }}</th>
-                                        {% endfor %}
-                                    {% else %}
-                                        <td>{{ loop.index0 }}</td>
+                                    <th>Index</th>
+                                    {% for cell in csv_data[0] %}
+                                        <th>{{ cell }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in csv_data[1:] %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
                                         {% for cell in row %}
                                             <td>{{ cell }}</td>
                                         {% endfor %}
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 </td>
                 <td valign="top" align="center">
                     <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ edl_mod_time }} (UTC)</a><hr style="margin:3px 0">
                     <div class="table-responsive">
-                        <table>
-                            <tr>
-                                <th>#</th>
-                                <th>IP Address</th>
-                            </tr>
-                            {% for ip in edl_data %}
+                        <table id="prisma-edl-table" class="display nowrap" style="width:100%">
+                            <thead>
                                 <tr>
-                                    <td>{{ loop.index }}</td>
-                                    <td>{{ ip }}</td>
+                                    <th>#</th>
+                                    <th>IP Address</th>
                                 </tr>
-                            {% endfor %}
+                            </thead>
+                            <tbody>
+                                {% for ip in edl_data %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ ip }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 </td>
             </tr>
         </table>
     </div>
+{% endblock %}
+
+{% block datatables_script %}
+<script>
+    $(document).ready(function() {
+        // Initialize CSV table
+        $('#prisma-csv-table').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        // Initialize EDL table
+        $('#prisma-edl-table').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            order: [[0, 'asc']]
+        });
+    });
+</script>
 {% endblock %}
