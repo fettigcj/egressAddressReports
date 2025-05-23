@@ -7,6 +7,7 @@
 {% block content %}
     <!-- Navigation Buttons -->
     <div class="nav-buttons">
+        <button class="nav-button" onclick="showReport('all')">All Reports</button>
         {% if prisma_data.has_files %}
             <button class="nav-button active" onclick="showReport('prisma')">Prisma Access Egress IPs</button>
         {% endif %}
@@ -16,7 +17,6 @@
         {% if azure_data.has_files %}
             <button class="nav-button" onclick="showReport('azure')">Azure Public IP Objects</button>
         {% endif %}
-        <button class="nav-button" onclick="showReport('all')">All Reports</button>
         <a href="{{ url_for('all_ips') }}" class="nav-button">All IPs</a>
     </div>
 
@@ -39,39 +39,46 @@
                             <td valign="top" align="center">
                                 <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ prisma_data.csv_mod_time }} (UTC)</a><hr style="margin:3px 0">
                                 <div class="table-responsive">
-                                    <table>
-                                        {% for row in prisma_data.csv_data %}
+                                    <table id="prisma-csv-dashboard" class="display nowrap" style="width:100%">
+                                        <thead>
                                             <tr>
-                                                {% if loop.index0 == 0 %}
-                                                    <th>Index</th>
-                                                    {% for cell in row %}
-                                                        <th>{{ cell }}</th>
-                                                    {% endfor %}
-                                                {% else %}
-                                                    <td>{{ loop.index0 }}</td>
+                                                <th>Index</th>
+                                                {% for cell in prisma_data.csv_data[0] %}
+                                                    <th>{{ cell }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for row in prisma_data.csv_data[1:] %}
+                                                <tr>
+                                                    <td>{{ loop.index }}</td>
                                                     {% for cell in row %}
                                                         <td>{{ cell }}</td>
                                                     {% endfor %}
-                                                {% endif %}
-                                            </tr>
-                                        {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
                                     </table>
                                 </div>
                             </td>
                             <td valign="top" align="center">
                                 <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ prisma_data.edl_mod_time }} (UTC)</a><hr style="margin:3px 0">
                                 <div class="table-responsive">
-                                    <table>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>IP Address</th>
-                                        </tr>
-                                        {% for ip in prisma_data.edl_data %}
+                                    <table id="prisma-edl-dashboard" class="display nowrap" style="width:100%">
+                                        <thead>
                                             <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td>{{ ip }}</td>
+                                                <th>#</th>
+                                                <th>IP Address</th>
                                             </tr>
-                                        {% endfor %}
+                                        </thead>
+                                        <tbody>
+                                            {% for ip in prisma_data.edl_data %}
+                                                <tr>
+                                                    <td>{{ loop.index }}</td>
+                                                    <td>{{ ip }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
                                     </table>
                                 </div>
                             </td>
@@ -98,22 +105,25 @@
                     </div>
                     <hr style="margin:3px 0">
                     <div class="table-responsive">
-                        <table>
-                            {% for row in cisco_data.csv_data %}
+                        <table id="cisco-dashboard" class="display nowrap" style="width:100%">
+                            <thead>
                                 <tr>
-                                    {% if loop.index0 == 0 %}
-                                        <th>Index</th>
-                                        {% for cell in row %}
-                                            <th>{{ cell }}</th>
-                                        {% endfor %}
-                                    {% else %}
-                                        <td>{{ loop.index0 }}</td>
+                                    <th>Index</th>
+                                    {% for cell in cisco_data.csv_data[0] %}
+                                        <th>{{ cell }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in cisco_data.csv_data[1:] %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
                                         {% for cell in row %}
                                             <td>{{ cell }}</td>
                                         {% endfor %}
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -133,22 +143,25 @@
                     </div>
                     <hr style="margin:3px 0">
                     <div class="table-responsive">
-                        <table>
-                            {% for row in azure_data.csv_data %}
+                        <table id="azure-dashboard" class="display nowrap" style="width:100%">
+                            <thead>
                                 <tr>
-                                    {% if loop.index0 == 0 %}
-                                        <th>Index</th>
-                                        {% for cell in row %}
-                                            <th>{{ cell }}</th>
-                                        {% endfor %}
-                                    {% else %}
-                                        <td>{{ loop.index0 }}</td>
+                                    <th>Index</th>
+                                    {% for cell in azure_data.csv_data[0] %}
+                                        <th>{{ cell }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in azure_data.csv_data[1:] %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
                                         {% for cell in row %}
                                             <td>{{ cell }}</td>
                                         {% endfor %}
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -170,22 +183,25 @@
                         </div>
                         <hr style="margin:3px 0">
                         <div class="table-responsive">
-                            <table>
-                                {% for row in prisma_data.csv_data %}
+                            <table id="prisma-all-dashboard" class="display nowrap" style="width:100%">
+                                <thead>
                                     <tr>
-                                        {% if loop.index0 == 0 %}
-                                            <th>Index</th>
-                                            {% for cell in row %}
-                                                <th>{{ cell }}</th>
-                                            {% endfor %}
-                                        {% else %}
-                                            <td>{{ loop.index0 }}</td>
+                                        <th>Index</th>
+                                        {% for cell in prisma_data.csv_data[0] %}
+                                            <th>{{ cell }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in prisma_data.csv_data[1:] %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
                                             {% for cell in row %}
                                                 <td>{{ cell }}</td>
                                             {% endfor %}
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -204,22 +220,25 @@
                         </div>
                         <hr style="margin:3px 0">
                         <div class="table-responsive">
-                            <table>
-                                {% for row in cisco_data.csv_data %}
+                            <table id="cisco-all-dashboard" class="display nowrap" style="width:100%">
+                                <thead>
                                     <tr>
-                                        {% if loop.index0 == 0 %}
-                                            <th>Index</th>
-                                            {% for cell in row %}
-                                                <th>{{ cell }}</th>
-                                            {% endfor %}
-                                        {% else %}
-                                            <td>{{ loop.index0 }}</td>
+                                        <th>Index</th>
+                                        {% for cell in cisco_data.csv_data[0] %}
+                                            <th>{{ cell }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in cisco_data.csv_data[1:] %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
                                             {% for cell in row %}
                                                 <td>{{ cell }}</td>
                                             {% endfor %}
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -234,22 +253,25 @@
                         </div>
                         <hr style="margin:3px 0">
                         <div class="table-responsive">
-                            <table>
-                                {% for row in azure_data.csv_data %}
+                            <table id="azure-all-dashboard" class="display nowrap" style="width:100%">
+                                <thead>
                                     <tr>
-                                        {% if loop.index0 == 0 %}
-                                            <th>Index</th>
-                                            {% for cell in row %}
-                                                <th>{{ cell }}</th>
-                                            {% endfor %}
-                                        {% else %}
-                                            <td>{{ loop.index0 }}</td>
+                                        <th>Index</th>
+                                        {% for cell in azure_data.csv_data[0] %}
+                                            <th>{{ cell }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in azure_data.csv_data[1:] %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
                                             {% for cell in row %}
                                                 <td>{{ cell }}</td>
                                             {% endfor %}
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -289,4 +311,77 @@
             showReport('all');
         };
     </script>
+{% endblock %}
+
+{% block datatables_script %}
+<script>
+    $(document).ready(function() {
+        // Initialize Prisma tables
+        $('#prisma-csv-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        $('#prisma-edl-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        // Initialize Cisco table
+        $('#cisco-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        // Initialize Azure table
+        $('#azure-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        // Initialize All Reports view tables
+        $('#prisma-all-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        $('#cisco-all-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        $('#azure-all-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+    });
+</script>
 {% endblock %}

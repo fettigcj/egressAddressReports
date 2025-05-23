@@ -10,24 +10,45 @@
     <div class="report-content">
         <h3>Combined IP Addresses from All Sources</h3>
         <p>This report shows all IP addresses from Prisma Access, Cisco, and Azure sources in a single table.</p>
-        
+
         <div class="table-responsive">
-            <table>
-                <tr>
-                    <th>Index</th>
-                    <th>Source</th>
-                    <th>Name</th>
-                    <th>IP Address</th>
-                </tr>
-                {% for item in all_ips_data %}
+            <table id="all-ips-table" class="display nowrap" style="width:100%">
+                <thead>
                     <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ item.source }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.ip }}</td>
+                        <th>Index</th>
+                        <th>Source</th>
+                        <th>Name</th>
+                        <th>IP Address</th>
                     </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {% for item in all_ips_data %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ item.source }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.ip }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block datatables_script %}
+<script>
+    $(document).ready(function() {
+        $('#all-ips-table').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            order: [[0, 'asc']]
+        });
+    });
+</script>
 {% endblock %}
