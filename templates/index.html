@@ -17,7 +17,7 @@
         {% if azure_data.has_files %}
             <button class="nav-button" onclick="showReport('azure')">Azure Public IP Objects</button>
         {% endif %}
-        <a href="{{ url_for('all_ips') }}" class="nav-button">All IPs</a>
+        <button class="nav-button" onclick="showReport('allips')">All IPs</button>
     </div>
 
     <!-- Reports Container -->
@@ -26,7 +26,6 @@
         {% if prisma_data.has_files %}
             <div id="prisma-report" class="report-section active">
                 <h2>Prisma Access Egress IPs</h2>
-                <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
 
                 <div class="embedded-report">
                     <h3>Latest Prisma Access egress IP data:</h3>
@@ -92,7 +91,6 @@
         {% if cisco_data.has_files %}
             <div id="cisco-report" class="report-section">
                 <h2>Cisco Public IPs</h2>
-                <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
 
                 <div class="embedded-report">
                     <h3>Latest Cisco Public IP data:</h3>
@@ -134,7 +132,6 @@
         {% if azure_data.has_files %}
             <div id="azure-report" class="report-section">
                 <h2>Azure Public IP Objects</h2>
-                <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
 
                 <div class="embedded-report">
                     <h3>Latest Azure Public IP Objects data:</h3>
@@ -168,6 +165,39 @@
             </div>
         {% endif %}
 
+        <!-- All IPs View -->
+        <div id="allips-report" class="report-section">
+            <h2>All IPs</h2>
+
+            <div class="embedded-report">
+                <h3>Combined IP Addresses from All Sources</h3>
+                <p>This report shows all IP addresses from Prisma Access, Cisco, and Azure sources in a single table.</p>
+
+                <div class="table-responsive">
+                    <table id="all-ips-dashboard" class="display nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Source</th>
+                                <th>Name</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in all_ips_data %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ item.source }}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.ip }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- All Reports View -->
         <div id="all-reports" class="report-section">
             <h2>All Reports</h2>
@@ -176,7 +206,6 @@
                 {% if prisma_data.has_files %}
                     <div class="embedded-report horizontal-report">
                         <h3>Prisma Access Egress IPs</h3>
-                        <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
                         <div align="center">
                             <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Download CSV</a> | 
                             <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Download EDL</a>
@@ -210,7 +239,6 @@
                 {% if cisco_data.has_files %}
                     <div class="embedded-report horizontal-report">
                         <h3>Cisco Public IPs</h3>
-                        <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
                         <div align="center">
                             <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Download CSV</a> | 
                             <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Download XLSX</a>
@@ -247,7 +275,6 @@
                 {% if azure_data.has_files %}
                     <div class="embedded-report horizontal-report">
                         <h3>Azure Public IP Objects</h3>
-                        <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
                         <div align="center">
                             <a href="{{ url_for('download_file', file_type='azure_csv') }}">Download CSV</a>
                         </div>
@@ -298,6 +325,8 @@
             // Show the selected report section
             if (reportId === 'all') {
                 document.getElementById('all-reports').classList.add('active');
+            } else if (reportId === 'allips') {
+                document.getElementById('allips-report').classList.add('active');
             } else {
                 document.getElementById(reportId + '-report').classList.add('active');
             }
@@ -379,6 +408,16 @@
             dom: 'Bfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             pageLength: 5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            order: [[0, 'asc']]
+        });
+
+        // Initialize All IPs table
+        $('#all-ips-dashboard').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            pageLength: 10,
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             order: [[0, 'asc']]
         });
