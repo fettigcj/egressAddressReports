@@ -41,7 +41,7 @@
                         </tr>
                         <tr>
                             <td valign="top" align="center">
-                                <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ prisma_data.csv_mod_time }} (UTC)</a><hr style="margin:3px 0">
+                                <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Prisma Access Egress IP CSV file was last generated {{ prisma_data.csv_mod_time }} (UTC)</a><hr style="margin:3px 0">
                                 <div class="table-responsive">
                                     <table id="prisma-csv-dashboard" class="display nowrap" style="width:100%">
                                         <thead>
@@ -66,7 +66,7 @@
                                 </div>
                             </td>
                             <td valign="top" align="center">
-                                <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ prisma_data.edl_mod_time }} (UTC)</a><hr style="margin:3px 0">
+                                <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Prisma Access Egress IP EDL file was last generated {{ prisma_data.edl_mod_time }} (UTC)</a><hr style="margin:3px 0">
                                 <div class="table-responsive">
                                     <table id="prisma-edl-dashboard" class="display nowrap" style="width:100%">
                                         <thead>
@@ -105,11 +105,21 @@
                 <div class="embedded-report">
                     <h3>Latest Cisco Public IP data:</h3>
                     <div align="center">
-                        <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last modified {{ cisco_data.csv_mod_time }} (UTC)</a> | 
-                        <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last modified {{ cisco_data.xlsx_mod_time }} (UTC)</a>
-                        {% if cisco_data.has_log_file %}
-                        | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Cisco Public IP Log file was last modified {{ cisco_data.log_mod_time }} (UTC)</a>
-                        {% endif %}
+                        <table width="100%">
+                            <TR>
+                                <TD>
+                                    <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last generated {{ cisco_data.csv_mod_time }} (UTC)</a><BR>
+                                </TD>
+                                <TD>
+                                    <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last generated {{ cisco_data.xlsx_mod_time }} (UTC)</a>
+                                </TD>
+                                {% if cisco_data.has_log_file %}
+                                <TD>
+                                    <a href="{{ url_for('download_file', file_type='cisco_log') }}">Log file of most recent generation process from {{ cisco_data.log_mod_time }} (UTC)</a>
+                                </TD>
+                            {% endif %}
+                            </TR>
+                        </table>
                     </div>
                     <hr style="margin:3px 0">
                     <div class="table-responsive">

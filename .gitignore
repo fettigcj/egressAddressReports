@@ -2,3 +2,4 @@ reports/*
 .junie/
 .venv/
 .idea/
+*.bak
