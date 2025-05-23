@@ -373,49 +373,41 @@
         };
 
         // Initialize Prisma tables
-        $('#prisma-csv-dashboard').DataTable({
-            ...commonConfig,
+        $('#prisma-csv-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
-        });
+        }));
 
-        $('#prisma-edl-dashboard').DataTable({
-            ...commonConfig,
+        $('#prisma-edl-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
-        });
+        }));
 
         // Initialize Cisco table
-        $('#cisco-dashboard').DataTable({
-            ...commonConfig,
+        $('#cisco-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
-        });
+        }));
 
         // Initialize Azure table
-        $('#azure-dashboard').DataTable({
-            ...commonConfig,
+        $('#azure-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
-        });
+        }));
 
         // Initialize All Reports view tables (smaller default page size)
-        $('#prisma-all-dashboard').DataTable({
-            ...commonConfig,
+        $('#prisma-all-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 5
-        });
+        }));
 
-        $('#cisco-all-dashboard').DataTable({
-            ...commonConfig,
+        $('#cisco-all-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 5
-        });
+        }));
 
-        $('#azure-all-dashboard').DataTable({
-            ...commonConfig,
+        $('#azure-all-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 5
-        });
+        }));
 
         // Initialize All IPs table
-        $('#all-ips-dashboard').DataTable({
-            ...commonConfig,
+        $('#all-ips-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
-        });
+        }));
     });
 </script>
 {% endblock %}
