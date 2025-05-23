@@ -12,32 +12,84 @@ os.makedirs(REPORTS_FOLDER, exist_ok=True)
 
 @app.route('/')
 def index():
-    """Home page that lists all available reports"""
-    # Get all text files from the reports directory
-    reports = []
-    if os.path.exists(REPORTS_FOLDER):
-        for filename in os.listdir(REPORTS_FOLDER):
-            if filename.endswith('.txt'):
-                reports.append(filename)
+    """Home page that displays all available reports"""
+    # Initialize data dictionaries
+    prisma_data = {'has_files': False}
+    cisco_data = {'has_files': False}
+    azure_data = {'has_files': False}
 
-    # Check if PrismaAccessEgressIPs files exist
+    # Check and load Prisma Access Egress IPs data
     prisma_csv = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.csv')
     prisma_edl = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.edl')
 
-    has_prisma_files = os.path.exists(prisma_csv) and os.path.exists(prisma_edl)
+    if os.path.exists(prisma_csv) and os.path.exists(prisma_edl):
+        prisma_data['has_files'] = True
+        try:
+            # Get file modification times
+            prisma_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(prisma_csv)).strftime('%b %d %Y %H:%M:%S')
+            prisma_data['edl_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(prisma_edl)).strftime('%b %d %Y %H:%M:%S')
 
-    # Check if CiscoPublicIPs files exist
+            # Read CSV file
+            prisma_data['csv_data'] = []
+            with open(prisma_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                for row in csv_reader:
+                    prisma_data['csv_data'].append(row)
+
+            # Read EDL file
+            prisma_data['edl_data'] = []
+            with open(prisma_edl, 'r') as file:
+                for line in file:
+                    prisma_data['edl_data'].append(line.strip())
+        except Exception as e:
+            prisma_data['error'] = str(e)
+
+    # Check and load Cisco Public IPs data
     cisco_csv = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
     cisco_xlsx = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.xlsx')
+    cisco_log = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
 
-    has_cisco_files = os.path.exists(cisco_csv) and os.path.exists(cisco_xlsx)
+    if os.path.exists(cisco_csv) and os.path.exists(cisco_xlsx):
+        cisco_data['has_files'] = True
+        try:
+            # Get file modification times
+            cisco_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cisco_csv)).strftime('%b %d %Y %H:%M:%S')
+            cisco_data['xlsx_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cisco_xlsx)).strftime('%b %d %Y %H:%M:%S')
+            cisco_data['has_log_file'] = os.path.exists(cisco_log)
+            if cisco_data['has_log_file']:
+                cisco_data['log_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cisco_log)).strftime('%b %d %Y %H:%M:%S')
 
-    # Check if AzurePIPs file exists
+            # Read CSV file
+            cisco_data['csv_data'] = []
+            with open(cisco_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                for row in csv_reader:
+                    cisco_data['csv_data'].append(row)
+        except Exception as e:
+            cisco_data['error'] = str(e)
+
+    # Check and load Azure Public IP Objects data
     azure_csv = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
 
-    has_azure_files = os.path.exists(azure_csv)
+    if os.path.exists(azure_csv):
+        azure_data['has_files'] = True
+        try:
+            # Get file modification time
+            azure_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(azure_csv)).strftime('%b %d %Y %H:%M:%S')
 
-    return render_template('index.html', reports=reports, has_prisma_files=has_prisma_files, has_cisco_files=has_cisco_files, has_azure_files=has_azure_files)
+            # Read CSV file
+            azure_data['csv_data'] = []
+            with open(azure_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                for row in csv_reader:
+                    azure_data['csv_data'].append(row)
+        except Exception as e:
+            azure_data['error'] = str(e)
+
+    return render_template('index.html', 
+                          prisma_data=prisma_data, 
+                          cisco_data=cisco_data, 
+                          azure_data=azure_data)
 
 @app.route('/report/<filename>')
 def view_report(filename):

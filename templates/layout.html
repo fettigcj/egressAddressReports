@@ -84,10 +84,10 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
         th, td {
-            padding: 8px;
+            padding: 4px;
             text-align: left;
             border: 1px solid #ddd;
         }
@@ -110,6 +110,70 @@
             margin-bottom: 0;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
+        }
+        /* Navigation styles */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .nav-button {
+            background-color: #f8f9fa;
+            color: #3498db;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-button:hover, .nav-button.active {
+            background-color: #3498db;
+            color: white;
+        }
+        /* Report container styles */
+        .reports-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .report-section {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            display: none;
+        }
+        .report-section.active {
+            display: block;
+        }
+        .report-section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 10px;
+        }
+        /* Embedded report styles */
+        .embedded-report {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #fff;
+        }
+        .embedded-report h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 10px;
+        }
+        /* Responsive table container */
+        .table-responsive {
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
         }
     </style>
 </head>

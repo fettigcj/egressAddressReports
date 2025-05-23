@@ -1,48 +1,230 @@
 {% extends "layout.html" %}
 
-{% block title %}Available Reports{% endblock %}
+{% block title %}IP Reports Dashboard{% endblock %}
 
-{% block header %}Available Reports{% endblock %}
+{% block header %}IP Reports Dashboard{% endblock %}
 
 {% block content %}
-    {% if has_prisma_files %}
-        <div class="special-report">
-            <h2>Prisma Access Egress IPs</h2>
-            <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
-            <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">View Prisma Access Egress IPs</a>
-        </div>
-        <hr>
-    {% endif %}
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        {% if prisma_data.has_files %}
+            <button class="nav-button active" onclick="showReport('prisma')">Prisma Access Egress IPs</button>
+        {% endif %}
+        {% if cisco_data.has_files %}
+            <button class="nav-button" onclick="showReport('cisco')">Cisco Public IPs</button>
+        {% endif %}
+        {% if azure_data.has_files %}
+            <button class="nav-button" onclick="showReport('azure')">Azure Public IP Objects</button>
+        {% endif %}
+        <button class="nav-button" onclick="showReport('all')">View All</button>
+    </div>
 
-    {% if has_cisco_files %}
-        <div class="special-report">
-            <h2>Cisco Public IPs</h2>
-            <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
-            <a href="{{ url_for('cisco_public_ips') }}" class="btn">View Cisco Public IPs</a>
-        </div>
-        <hr>
-    {% endif %}
+    <!-- Reports Container -->
+    <div class="reports-container">
+        <!-- Prisma Access Egress IPs Report -->
+        {% if prisma_data.has_files %}
+            <div id="prisma-report" class="report-section active">
+                <h2>Prisma Access Egress IPs</h2>
+                <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
+                <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
 
-    {% if has_azure_files %}
-        <div class="special-report">
-            <h2>Azure Public IP Objects</h2>
-            <p>View the Azure Public IP Objects data in CSV format.</p>
-            <a href="{{ url_for('azure_public_ips') }}" class="btn">View Azure Public IP Objects</a>
-        </div>
-        <hr>
-    {% endif %}
+                <div class="embedded-report">
+                    <h3>Latest Prisma Access egress IP data:</h3>
+                    <table border="1" width="100%">
+                        <tr>
+                            <td class="table-header"><h3>CSV Format</h3></td>
+                            <td class="table-header"><h3>EDL Format</h3></td>
+                        </tr>
+                        <tr>
+                            <td width="50%" valign="top" align="center">
+                                <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Egress IP CSV file was last modified {{ prisma_data.csv_mod_time }} (UTC)</a><br><hr>
+                                <div class="table-responsive">
+                                    <table>
+                                        {% for row in prisma_data.csv_data %}
+                                            <tr>
+                                                {% if loop.index0 == 0 %}
+                                                    <th>Index</th>
+                                                    {% for cell in row %}
+                                                        <th>{{ cell }}</th>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <td>{{ loop.index0 }}</td>
+                                                    {% for cell in row %}
+                                                        <td>{{ cell }}</td>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </td>
+                            <td width="50%" valign="top" align="center">
+                                <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Egress IP EDL file was last modified {{ prisma_data.edl_mod_time }} (UTC)</a><br><hr>
+                                <div class="table-responsive">
+                                    <table>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>IP Address</th>
+                                        </tr>
+                                        {% for ip in prisma_data.edl_data %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>{{ ip }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
 
-    <h2>Text Reports</h2>
-    {% if reports %}
-        <p>Select a report to view:</p>
-        <ul class="report-list">
-            {% for report in reports %}
-                <li>
-                    <a href="{{ url_for('view_report', filename=report) }}">{{ report }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No text reports available. Please add text files to the reports directory.</p>
-    {% endif %}
+        <!-- Cisco Public IPs Report -->
+        {% if cisco_data.has_files %}
+            <div id="cisco-report" class="report-section">
+                <h2>Cisco Public IPs</h2>
+                <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
+                <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
+
+                <div class="embedded-report">
+                    <h3>Latest Cisco Public IP data:</h3>
+                    <div align="center">
+                        <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last modified {{ cisco_data.csv_mod_time }} (UTC)</a> | 
+                        <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last modified {{ cisco_data.xlsx_mod_time }} (UTC)</a>
+                        {% if cisco_data.has_log_file %}
+                        | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Cisco Public IP Log file was last modified {{ cisco_data.log_mod_time }} (UTC)</a>
+                        {% endif %}
+                        <hr>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            {% for row in cisco_data.csv_data %}
+                                <tr>
+                                    {% if loop.index0 == 0 %}
+                                        <th>Index</th>
+                                        {% for cell in row %}
+                                            <th>{{ cell }}</th>
+                                        {% endfor %}
+                                    {% else %}
+                                        <td>{{ loop.index0 }}</td>
+                                        {% for cell in row %}
+                                            <td>{{ cell }}</td>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Azure Public IP Objects Report -->
+        {% if azure_data.has_files %}
+            <div id="azure-report" class="report-section">
+                <h2>Azure Public IP Objects</h2>
+                <p>View the Azure Public IP Objects data in CSV format.</p>
+                <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
+
+                <div class="embedded-report">
+                    <h3>Latest Azure Public IP Objects data:</h3>
+                    <div align="center">
+                        <a href="{{ url_for('download_file', file_type='azure_csv') }}">Azure Public IP Objects CSV file was last modified {{ azure_data.csv_mod_time }} (UTC)</a>
+                        <hr>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            {% for row in azure_data.csv_data %}
+                                <tr>
+                                    {% if loop.index0 == 0 %}
+                                        <th>Index</th>
+                                        {% for cell in row %}
+                                            <th>{{ cell }}</th>
+                                        {% endfor %}
+                                    {% else %}
+                                        <td>{{ loop.index0 }}</td>
+                                        {% for cell in row %}
+                                            <td>{{ cell }}</td>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- All Reports View -->
+        <div id="all-reports" class="report-section">
+            <h2>All Reports</h2>
+
+            {% if prisma_data.has_files %}
+                <div class="embedded-report">
+                    <h3>Prisma Access Egress IPs</h3>
+                    <p>View the Prisma Access egress IP data in CSV and EDL formats.</p>
+                    <a href="{{ url_for('prisma_access_egress_ips') }}" class="btn">Open in Full View</a>
+                    <div align="center">
+                        <a href="{{ url_for('download_file', file_type='prisma_csv') }}">Download CSV</a> | 
+                        <a href="{{ url_for('download_file', file_type='prisma_edl') }}">Download EDL</a>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if cisco_data.has_files %}
+                <div class="embedded-report">
+                    <h3>Cisco Public IPs</h3>
+                    <p>View the Cisco Public IP data in CSV and XLSX formats.</p>
+                    <a href="{{ url_for('cisco_public_ips') }}" class="btn">Open in Full View</a>
+                    <div align="center">
+                        <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Download CSV</a> | 
+                        <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Download XLSX</a>
+                        {% if cisco_data.has_log_file %}
+                        | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Download Log</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if azure_data.has_files %}
+                <div class="embedded-report">
+                    <h3>Azure Public IP Objects</h3>
+                    <p>View the Azure Public IP Objects data in CSV format.</p>
+                    <a href="{{ url_for('azure_public_ips') }}" class="btn">Open in Full View</a>
+                    <div align="center">
+                        <a href="{{ url_for('download_file', file_type='azure_csv') }}">Download CSV</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- JavaScript for tab switching -->
+    <script>
+        function showReport(reportId) {
+            // Hide all report sections
+            var sections = document.getElementsByClassName('report-section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+
+            // Remove active class from all buttons
+            var buttons = document.getElementsByClassName('nav-button');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            // Show the selected report section
+            if (reportId === 'all') {
+                document.getElementById('all-reports').classList.add('active');
+            } else {
+                document.getElementById(reportId + '-report').classList.add('active');
+            }
+
+            // Add active class to the clicked button
+            document.querySelector('.nav-button[onclick*="' + reportId + '"]').classList.add('active');
+        }
+    </script>
 {% endblock %}
