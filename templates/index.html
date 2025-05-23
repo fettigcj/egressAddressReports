@@ -335,9 +335,11 @@
             document.querySelector('.nav-button[onclick*="' + reportId + '"]').classList.add('active');
         }
 
-        // Set "All Reports" as the default view when the page loads
+        // Set the active report based on the URL parameter or default to "All Reports"
         window.onload = function() {
-            showReport('all');
+            // Use the active_report parameter passed from the server, or default to 'all'
+            var activeReport = '{{ active_report }}' || 'all';
+            showReport(activeReport);
         };
     </script>
 {% endblock %}

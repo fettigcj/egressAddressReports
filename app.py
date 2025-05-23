@@ -11,8 +11,9 @@ REPORTS_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'repor
 os.makedirs(REPORTS_FOLDER, exist_ok=True)
 
 @app.route('/')
-def index():
-    """Home page that displays all available reports"""
+@app.route('/<report_type>')
+def index(report_type=None):
+    """Home page that displays all available reports or a specific report type"""
     # Initialize data dictionaries
     prisma_data = {'has_files': False}
     cisco_data = {'has_files': False}
@@ -153,11 +154,24 @@ def index():
         except Exception as e:
             azure_data['error'] = str(e)
 
+    # Map URL parameter to report ID used in the template
+    active_report = 'all'  # Default to 'all' (All Reports)
+    if report_type:
+        if report_type.lower() in ['prismaaccess', 'prisma']:
+            active_report = 'prisma'
+        elif report_type.lower() in ['cisco', 'ciscoips']:
+            active_report = 'cisco'
+        elif report_type.lower() in ['azure', 'azureips']:
+            active_report = 'azure'
+        elif report_type.lower() in ['allips', 'all_ips']:
+            active_report = 'allips'
+
     return render_template('index.html', 
                           prisma_data=prisma_data, 
                           cisco_data=cisco_data,
                           azure_data=azure_data,
-                          all_ips_data=all_ips_data)
+                          all_ips_data=all_ips_data,
+                          active_report=active_report)
 
 @app.route('/report/<filename>')
 def view_report(filename):
