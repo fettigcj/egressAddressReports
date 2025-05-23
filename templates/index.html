@@ -16,7 +16,8 @@
         {% if azure_data.has_files %}
             <button class="nav-button" onclick="showReport('azure')">Azure Public IP Objects</button>
         {% endif %}
-        <button class="nav-button" onclick="showReport('all')">View All</button>
+        <button class="nav-button" onclick="showReport('all')">All Reports</button>
+        <a href="{{ url_for('all_ips') }}" class="nav-button">All IPs</a>
     </div>
 
     <!-- Reports Container -->
@@ -282,5 +283,10 @@
             // Add active class to the clicked button
             document.querySelector('.nav-button[onclick*="' + reportId + '"]').classList.add('active');
         }
+
+        // Set "All Reports" as the default view when the page loads
+        window.onload = function() {
+            showReport('all');
+        };
     </script>
 {% endblock %}

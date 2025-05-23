@@ -207,6 +207,94 @@ def azure_public_ips():
     except Exception as e:
         return render_template('error.html', error=str(e))
 
+@app.route('/all_ips')
+def all_ips():
+    """Display all IPs from all sources in a single table"""
+    all_ips_data = []
+
+    # Check and load Prisma Access Egress IPs data
+    prisma_csv = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.csv')
+    if os.path.exists(prisma_csv):
+        try:
+            with open(prisma_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                headers = next(csv_reader)  # Skip header row
+                location_idx = headers.index("Location") if "Location" in headers else 0
+                ip_idx = headers.index("egress IP") if "egress IP" in headers else 2
+
+                for row in csv_reader:
+                    if len(row) > max(location_idx, ip_idx):
+                        name = row[location_idx]
+                        ip = row[ip_idx]
+                        all_ips_data.append({
+                            'source': 'Prisma Access',
+                            'name': name,
+                            'ip': ip
+                        })
+        except Exception as e:
+            print(f"Error loading Prisma Access data: {str(e)}")
+
+    # Check and load Cisco Public IPs data
+    cisco_csv = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
+    if os.path.exists(cisco_csv):
+        try:
+            with open(cisco_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                headers = next(csv_reader)  # Skip header row
+                hostname_idx = headers.index("host-name") if "host-name" in headers else 1
+                ip_idx = headers.index("interface-IP") if "interface-IP" in headers else 6
+
+                for row in csv_reader:
+                    if len(row) > max(hostname_idx, ip_idx):
+                        name = row[hostname_idx]
+                        ip_with_subnet = row[ip_idx]
+
+                        # Handle multiple IPs separated by semicolons
+                        if ';' in ip_with_subnet:
+                            ips = ip_with_subnet.split(';')
+                            for ip_entry in ips:
+                                # Extract IP without subnet
+                                ip = ip_entry.strip().split('/')[0]
+                                all_ips_data.append({
+                                    'source': 'Cisco',
+                                    'name': name,
+                                    'ip': ip
+                                })
+                        else:
+                            # Extract IP without subnet
+                            ip = ip_with_subnet.split('/')[0]
+                            all_ips_data.append({
+                                'source': 'Cisco',
+                                'name': name,
+                                'ip': ip
+                            })
+        except Exception as e:
+            print(f"Error loading Cisco data: {str(e)}")
+
+    # Check and load Azure Public IP Objects data
+    azure_csv = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
+    if os.path.exists(azure_csv):
+        try:
+            with open(azure_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                headers = next(csv_reader)  # Skip header row
+                name_idx = headers.index("name") if "name" in headers else 0
+                ip_idx = headers.index("ipAddress") if "ipAddress" in headers else 1
+
+                for row in csv_reader:
+                    if len(row) > max(name_idx, ip_idx):
+                        name = row[name_idx]
+                        ip = row[ip_idx]
+                        all_ips_data.append({
+                            'source': 'Azure',
+                            'name': name,
+                            'ip': ip
+                        })
+        except Exception as e:
+            print(f"Error loading Azure data: {str(e)}")
+
+    return render_template('all_ips.html', all_ips_data=all_ips_data)
+
 @app.route('/download/<file_type>')
 def download_file(file_type):
     """Serve the file for download"""
