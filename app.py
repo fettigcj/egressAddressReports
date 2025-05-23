@@ -26,7 +26,13 @@ def index():
 
     has_prisma_files = os.path.exists(prisma_csv) and os.path.exists(prisma_edl)
 
-    return render_template('index.html', reports=reports, has_prisma_files=has_prisma_files)
+    # Check if CiscoPublicIPs files exist
+    cisco_csv = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
+    cisco_xlsx = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.xlsx')
+
+    has_cisco_files = os.path.exists(cisco_csv) and os.path.exists(cisco_xlsx)
+
+    return render_template('index.html', reports=reports, has_prisma_files=has_prisma_files, has_cisco_files=has_cisco_files)
 
 @app.route('/report/<filename>')
 def view_report(filename):
@@ -85,14 +91,58 @@ def prisma_access_egress_ips():
     except Exception as e:
         return render_template('error.html', error=str(e))
 
+@app.route('/cisco_public_ips')
+def cisco_public_ips():
+    """Display the Cisco Public IPs data with download links for CSV and XLSX"""
+    csv_path = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
+    xlsx_path = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.xlsx')
+    log_path = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
+
+    # Check if files exist
+    if not os.path.exists(csv_path) or not os.path.exists(xlsx_path):
+        return redirect(url_for('index'))
+
+    try:
+        # Get file modification times
+        csv_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(csv_path)).strftime('%b %d %Y %H:%M:%S')
+        xlsx_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(xlsx_path)).strftime('%b %d %Y %H:%M:%S')
+        log_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(log_path)).strftime('%b %d %Y %H:%M:%S') if os.path.exists(log_path) else "N/A"
+
+        # Read CSV file
+        csv_data = []
+        with open(csv_path, 'r') as file:
+            csv_reader = csv.reader(file)
+            for row in csv_reader:
+                csv_data.append(row)
+
+        return render_template('cisco_public_ips.html',
+                              csv_data=csv_data,
+                              csv_mod_time=csv_mod_time,
+                              xlsx_mod_time=xlsx_mod_time,
+                              log_mod_time=log_mod_time,
+                              has_log_file=os.path.exists(log_path))
+    except Exception as e:
+        return render_template('error.html', error=str(e))
+
 @app.route('/download/<file_type>')
 def download_file(file_type):
-    """Serve the CSV or EDL file for download"""
-    if file_type == 'csv':
+    """Serve the file for download"""
+    if file_type == 'prisma_csv':
         file_path = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.csv')
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
-    elif file_type == 'edl':
+    elif file_type == 'prisma_edl':
         file_path = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.edl')
+        return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
+    elif file_type == 'cisco_csv':
+        file_path = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
+        return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
+    elif file_type == 'cisco_xlsx':
+        file_path = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.xlsx')
+        with open(file_path, 'rb') as f:
+            data = f.read()
+        return data, 200, {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}
+    elif file_type == 'cisco_log':
+        file_path = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
 
 if __name__ == '__main__':
