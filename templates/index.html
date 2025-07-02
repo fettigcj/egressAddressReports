@@ -14,8 +14,8 @@
         {% if cisco_data.has_files %}
             <button class="nav-button" onclick="showReport('cisco')">Cisco Public IPs</button>
         {% endif %}
-        {% if azure_data.has_files %}
-            <button class="nav-button" onclick="showReport('azure')">Azure Public IP Objects</button>
+        {% if cloud_data.has_files %}
+            <button class="nav-button" onclick="showReport('cloud')">Cloud Public IP Objects</button>
         {% endif %}
         <button class="nav-button" onclick="showReport('allips')">All IPs</button>
     </div>
@@ -148,34 +148,34 @@
             </div>
         {% endif %}
 
-        <!-- Azure Public IP Objects Report -->
-        {% if azure_data.has_files %}
-            <div id="azure-report" class="report-section">
+        <!-- Cloud Public IP Objects Report -->
+        {% if cloud_data.has_files %}
+            <div id="cloud-report" class="report-section">
                 <h2>
-                    Azure Public IP Objects
-                    <a href="/azure" class="direct-link" title="Bookmark this link for direct access">
+                    Cloud Public IP Objects
+                    <a href="/cloud" class="direct-link" title="Bookmark this link for direct access">
                         <span class="direct-link-icon">🔗</span>Direct Link
                     </a>
                 </h2>
 
                 <div class="embedded-report">
-                    <h3>Latest Azure Public IP Objects data:</h3>
+                    <h3>Latest Cloud Public IP Objects data:</h3>
                     <div align="center">
-                        <a href="{{ url_for('download_file', file_type='azure_csv') }}">Azure Public IP Objects CSV file was last modified {{ azure_data.csv_mod_time }} (UTC)</a>
+                        <a href="{{ url_for('download_file', file_type='cloud_csv') }}">Cloud Public IP Objects CSV file was last modified {{ cloud_data.csv_mod_time }} (UTC)</a>
                     </div>
                     <hr style="margin:3px 0">
                     <div class="table-responsive">
-                        <table id="azure-dashboard" class="display nowrap" style="width:100%">
+                        <table id="cloud-dashboard" class="display nowrap" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Index</th>
-                                    {% for cell in azure_data.csv_data[0] %}
+                                    {% for cell in cloud_data.csv_data[0] %}
                                         <th>{{ cell }}</th>
                                     {% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for row in azure_data.csv_data[1:] %}
+                                {% for row in cloud_data.csv_data[1:] %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         {% for cell in row %}
@@ -307,25 +307,25 @@
                     </div>
                 {% endif %}
 
-                {% if azure_data.has_files %}
+                {% if cloud_data.has_files %}
                     <div class="embedded-report horizontal-report">
-                        <h3>Azure Public IP Objects</h3>
+                        <h3>Cloud Public IP Objects</h3>
                         <div align="center">
-                            <a href="{{ url_for('download_file', file_type='azure_csv') }}">Download CSV</a>
+                            <a href="{{ url_for('download_file', file_type='cloud_csv') }}">Download CSV</a>
                         </div>
                         <hr style="margin:3px 0">
                         <div class="table-responsive">
-                            <table id="azure-all-dashboard" class="display nowrap" style="width:100%">
+                            <table id="cloud-all-dashboard" class="display nowrap" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Index</th>
-                                        {% for cell in azure_data.csv_data[0] %}
+                                        {% for cell in cloud_data.csv_data[0] %}
                                             <th>{{ cell }}</th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for row in azure_data.csv_data[1:] %}
+                                    {% for row in cloud_data.csv_data[1:] %}
                                         <tr>
                                             <td>{{ loop.index }}</td>
                                             {% for cell in row %}
@@ -568,8 +568,8 @@
             pageLength: 10
         }));
 
-        // Initialize Azure table
-        $('#azure-dashboard').DataTable(Object.assign({}, commonConfig, {
+        // Initialize Cloud table
+        $('#cloud-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
         }));
 
@@ -582,7 +582,7 @@
             pageLength: 10
         }));
 
-        $('#azure-all-dashboard').DataTable(Object.assign({}, commonConfig, {
+        $('#cloud-all-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10
         }));
 

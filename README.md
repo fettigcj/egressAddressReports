@@ -1,6 +1,6 @@
 # IP Reports Dashboard
 
-A Flask web application that displays and manages various IP address reports including Prisma Access Egress IPs, Cisco Public IPs, and Azure Public IP Objects. The application provides interactive tables with advanced filtering, sorting, and pagination capabilities.
+A Flask web application that displays and manages various IP address reports including Prisma Access Egress IPs, Cisco Public IPs, and Cloud Public IP Objects. The application provides interactive tables with advanced filtering, sorting, and pagination capabilities.
 
 ## Features
 
@@ -8,7 +8,7 @@ A Flask web application that displays and manages various IP address reports inc
 - **Multiple Report Types**:
   - Prisma Access Egress IPs (CSV and EDL formats)
   - Cisco Public IPs (CSV and XLSX formats)
-  - Azure Public IP Objects (CSV format)
+  - Cloud Public IP Objects (CSV format)
   - Combined view of all IPs from all sources
 - **Interactive Tables**:
   - Sorting: Click on column headers to sort data
@@ -36,7 +36,7 @@ A Flask web application that displays and manages various IP address reports inc
 1. Place your report files in the `reports` directory:
    - `PrismaAccessEgressIPs.csv` and `PrismaAccessEgressIPs.edl` for Prisma Access reports
    - `CiscoPublicIPs.csv` and `CiscoPublicIPs.xlsx` for Cisco reports
-   - `AzurePIPs.csv` for Azure reports
+   - `CloudEgressIPs.csv` for Cloud reports
    - `RetrieveCiscoPublicIP.log` (optional) for Cisco retrieval logs
 
 2. Run the application:
@@ -53,7 +53,7 @@ The application supports direct access to specific reports via URL:
 - `/` - All Reports view (default)
 - `/prismaaccess` - Prisma Access Egress IPs report
 - `/cisco` - Cisco Public IPs report
-- `/azure` - Azure Public IP Objects report
+- `/cloud` - Cloud Public IP Objects report
 - `/allips` - Combined view of all IPs
 
 ## Table Features

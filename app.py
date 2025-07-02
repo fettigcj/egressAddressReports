@@ -17,7 +17,7 @@ def index(report_type=None):
     # Initialize data dictionaries
     prisma_data = {'has_files': False}
     cisco_data = {'has_files': False}
-    azure_data = {'has_files': False}
+    cloud_data = {'has_files': False}
     all_ips_data = []
 
     # Check and load Prisma Access Egress IPs data
@@ -119,40 +119,40 @@ def index(report_type=None):
         except Exception as e:
             cisco_data['error'] = str(e)
 
-    # Check and load Azure Public IP Objects data
-    azure_csv = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
+    # Check and load Cloud Public IP Objects data
+    cloud_csv = os.path.join(REPORTS_FOLDER, 'CloudEgressIPs.csv')
 
-    if os.path.exists(azure_csv):
-        azure_data['has_files'] = True
+    if os.path.exists(cloud_csv):
+        cloud_data['has_files'] = True
         try:
             # Get file modification time
-            azure_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(azure_csv)).strftime('%b %d %Y %H:%M:%S')
+            cloud_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cloud_csv)).strftime('%b %d %Y %H:%M:%S')
 
             # Read CSV file
-            azure_data['csv_data'] = []
-            with open(azure_csv, 'r') as file:
+            cloud_data['csv_data'] = []
+            with open(cloud_csv, 'r') as file:
                 csv_reader = csv.reader(file)
                 headers = next(csv_reader)  # Get header row
-                azure_data['csv_data'].append(headers)
+                cloud_data['csv_data'].append(headers)
 
                 # Find indices for name and IP
                 name_idx = headers.index("name") if "name" in headers else 0
                 ip_idx = headers.index("ipAddress") if "ipAddress" in headers else 1
 
                 for row in csv_reader:
-                    azure_data['csv_data'].append(row)
+                    cloud_data['csv_data'].append(row)
 
                     # Add to all_ips_data
                     if len(row) > max(name_idx, ip_idx):
                         name = row[name_idx]
                         ip = row[ip_idx]
                         all_ips_data.append({
-                            'source': 'Azure',
+                            'source': 'Cloud',
                             'name': name,
                             'ip': ip
                         })
         except Exception as e:
-            azure_data['error'] = str(e)
+            cloud_data['error'] = str(e)
 
     # Map URL parameter to report ID used in the template
     active_report = 'all'  # Default to 'all' (All Reports)
@@ -161,15 +161,15 @@ def index(report_type=None):
             active_report = 'prisma'
         elif report_type.lower() in ['cisco', 'ciscoips']:
             active_report = 'cisco'
-        elif report_type.lower() in ['azure', 'azureips']:
-            active_report = 'azure'
+        elif report_type.lower() in ['cloud', 'cloudips']:
+            active_report = 'cloud'
         elif report_type.lower() in ['allips', 'all_ips']:
             active_report = 'allips'
 
     return render_template('index.html', 
                           prisma_data=prisma_data, 
                           cisco_data=cisco_data,
-                          azure_data=azure_data,
+                          cloud_data=cloud_data,
                           all_ips_data=all_ips_data,
                           active_report=active_report)
 
@@ -222,8 +222,8 @@ def download_file(file_type):
     elif file_type == 'cisco_log':
         file_path = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
-    elif file_type == 'azure_csv':
-        file_path = os.path.join(REPORTS_FOLDER, 'AzurePIPs.csv')
+    elif file_type == 'cloud_csv':
+        file_path = os.path.join(REPORTS_FOLDER, 'CloudEgressIPs.csv')
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
 
 if __name__ == '__main__':
