@@ -165,5 +165,10 @@ def download_file(file_type):
             return render_template('error.html', error='Requested file not found'), 404
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
 
+@app.route('/health')
+def health():
+    """Simple health check endpoint for load balancers and monitoring"""
+    return 'OK', 200, {'Content-Type': 'text/plain; charset=utf-8'}
+
 if __name__ == '__main__':
     app.run(debug=True)

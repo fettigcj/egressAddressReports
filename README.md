@@ -36,12 +36,38 @@ A Flask web application that displays and manages various IP address reports inc
 - `PrismaAccessEgressIPs.csv` and `PrismaAccessEgressIPs.edl` for Prisma Access reports
 - `CloudEgressIPs.csv` for Cloud reports
 
-2. Run the application:
+2. Run the application locally (development):
    ```
    python app.py
+   # or
+   python wsgi.py
    ```
 
 3. Open your browser and navigate to `http://127.0.0.1:5000/`
+
+## Deployment (Apache mod_wsgi)
+
+In production, do not call `app.run()` directly. Instead, have Apache import the WSGI callable named `application` from `wsgi.py`.
+
+Example Apache config:
+```
+ServerName egressreport.example.com
+DocumentRoot /path/to/egressReport
+
+WSGIDaemonProcess egressreport python-home=/path/to/egressReport/.venv
+WSGIProcessGroup egressreport
+WSGIScriptAlias / /path/to/egressReport/wsgi.py
+
+<Directory "/path/to/egressReport">
+    Require all granted
+</Directory>
+```
+
+Notes:
+- Ensure the virtualenv path in `python-home` is correct for your server.
+- `wsgi.py` already ensures the project root is on `sys.path` and exposes `application`.
+- After deploying or updating code, reload Apache.
+- Health check endpoint: `GET /health` returns `200 OK` when the app is loaded.
 
 ## URL Routes
 
