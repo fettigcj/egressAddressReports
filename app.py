@@ -24,7 +24,6 @@ def index(report_type=None):
     prisma_edl = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.edl')
 
     if os.path.exists(prisma_csv) and os.path.exists(prisma_edl):
-        prisma_data['has_files'] = True
         try:
             # Get file modification times
             prisma_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(prisma_csv)).strftime('%b %d %Y %H:%M:%S')
@@ -59,6 +58,9 @@ def index(report_type=None):
             with open(prisma_edl, 'r') as file:
                 for line in file:
                     prisma_data['edl_data'].append(line.strip())
+
+            # Mark as available only after successful read
+            prisma_data['has_files'] = True
         except Exception as e:
             prisma_data['error'] = str(e)
 
@@ -67,7 +69,6 @@ def index(report_type=None):
     cloud_csv = os.path.join(REPORTS_FOLDER, 'CloudEgressIPs.csv')
 
     if os.path.exists(cloud_csv):
-        cloud_data['has_files'] = True
         try:
             # Get file modification time
             cloud_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cloud_csv)).strftime('%b %d %Y %H:%M:%S')
@@ -95,6 +96,8 @@ def index(report_type=None):
                             'name': name,
                             'ip': ip
                         })
+            # Mark as available only after successful read
+            cloud_data['has_files'] = True
         except Exception as e:
             cloud_data['error'] = str(e)
 
