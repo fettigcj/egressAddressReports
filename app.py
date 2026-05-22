@@ -16,7 +16,6 @@ def index(report_type=None):
     """Home page that displays all available reports or a specific report type"""
     # Initialize data dictionaries
     prisma_data = {'has_files': False}
-    cisco_data = {'has_files': False}
     cloud_data = {'has_files': False}
     all_ips_data = []
 
@@ -63,61 +62,6 @@ def index(report_type=None):
         except Exception as e:
             prisma_data['error'] = str(e)
 
-    # Check and load Cisco Public IPs data
-    cisco_csv = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
-    cisco_xlsx = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.xlsx')
-    cisco_log = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
-
-    if os.path.exists(cisco_csv) and os.path.exists(cisco_xlsx):
-        cisco_data['has_files'] = True
-        try:
-            # Get file modification times
-            cisco_data['csv_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cisco_csv)).strftime('%b %d %Y %H:%M:%S')
-            cisco_data['xlsx_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cisco_xlsx)).strftime('%b %d %Y %H:%M:%S')
-            cisco_data['has_log_file'] = os.path.exists(cisco_log)
-            if cisco_data['has_log_file']:
-                cisco_data['log_mod_time'] = datetime.datetime.fromtimestamp(os.path.getmtime(cisco_log)).strftime('%b %d %Y %H:%M:%S')
-
-            # Read CSV file
-            cisco_data['csv_data'] = []
-            with open(cisco_csv, 'r') as file:
-                csv_reader = csv.reader(file)
-                headers = next(csv_reader)  # Get header row
-                cisco_data['csv_data'].append(headers)
-
-                # Find indices for hostname and IP
-                hostname_idx = headers.index("host-name") if "host-name" in headers else 1
-                ip_idx = headers.index("interface-IP") if "interface-IP" in headers else 6
-
-                for row in csv_reader:
-                    cisco_data['csv_data'].append(row)
-
-                    # Add to all_ips_data
-                    if len(row) > max(hostname_idx, ip_idx):
-                        name = row[hostname_idx]
-                        ip_with_subnet = row[ip_idx]
-
-                        # Handle multiple IPs separated by semicolons
-                        if ';' in ip_with_subnet:
-                            ips = ip_with_subnet.split(';')
-                            for ip_entry in ips:
-                                # Extract IP without subnet
-                                ip = ip_entry.strip().split('/')[0]
-                                all_ips_data.append({
-                                    'source': 'Cisco',
-                                    'name': name,
-                                    'ip': ip
-                                })
-                        else:
-                            # Extract IP without subnet
-                            ip = ip_with_subnet.split('/')[0]
-                            all_ips_data.append({
-                                'source': 'Cisco',
-                                'name': name,
-                                'ip': ip
-                            })
-        except Exception as e:
-            cisco_data['error'] = str(e)
 
     # Check and load Cloud Public IP Objects data
     cloud_csv = os.path.join(REPORTS_FOLDER, 'CloudEgressIPs.csv')
@@ -159,19 +103,16 @@ def index(report_type=None):
     if report_type:
         if report_type.lower() in ['prismaaccess', 'prisma']:
             active_report = 'prisma'
-        elif report_type.lower() in ['cisco', 'ciscoips']:
-            active_report = 'cisco'
         elif report_type.lower() in ['cloud', 'cloudips']:
             active_report = 'cloud'
         elif report_type.lower() in ['allips', 'all_ips']:
             active_report = 'allips'
 
     return render_template('index.html', 
-                          prisma_data=prisma_data, 
-                          cisco_data=cisco_data,
-                          cloud_data=cloud_data,
-                          all_ips_data=all_ips_data,
-                          active_report=active_report)
+                         prisma_data=prisma_data, 
+                         cloud_data=cloud_data,
+                         all_ips_data=all_ips_data,
+                         active_report=active_report)
 
 @app.route('/report/<filename>')
 def view_report(filename):
@@ -210,17 +151,6 @@ def download_file(file_type):
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
     elif file_type == 'prisma_edl':
         file_path = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.edl')
-        return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
-    elif file_type == 'cisco_csv':
-        file_path = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.csv')
-        return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
-    elif file_type == 'cisco_xlsx':
-        file_path = os.path.join(REPORTS_FOLDER, 'CiscoPublicIPs.xlsx')
-        with open(file_path, 'rb') as f:
-            data = f.read()
-        return data, 200, {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}
-    elif file_type == 'cisco_log':
-        file_path = os.path.join(REPORTS_FOLDER, 'RetrieveCiscoPublicIP.log')
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
     elif file_type == 'cloud_csv':
         file_path = os.path.join(REPORTS_FOLDER, 'CloudEgressIPs.csv')

@@ -11,9 +11,6 @@
         {% if prisma_data.has_files %}
             <button class="nav-button active" onclick="showReport('prisma')">Prisma Access Egress IPs</button>
         {% endif %}
-        {% if cisco_data.has_files %}
-            <button class="nav-button" onclick="showReport('cisco')">Cisco Public IPs</button>
-        {% endif %}
         {% if cloud_data.has_files %}
             <button class="nav-button" onclick="showReport('cloud')">Cloud Public IP Objects</button>
         {% endif %}
@@ -92,61 +89,6 @@
             </div>
         {% endif %}
 
-        <!-- Cisco Public IPs Report -->
-        {% if cisco_data.has_files %}
-            <div id="cisco-report" class="report-section">
-                <h2>
-                    Cisco Public IPs
-                    <a href="/cisco" class="direct-link" title="Bookmark this link for direct access">
-                        <span class="direct-link-icon">🔗</span>Direct Link
-                    </a>
-                </h2>
-
-                <div class="embedded-report">
-                    <h3>Latest Cisco Public IP data:</h3>
-                    <div align="center">
-                        <table width="100%">
-                            <TR>
-                                <TD>
-                                    <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Cisco Public IP CSV file was last generated {{ cisco_data.csv_mod_time }} (UTC)</a><BR>
-                                </TD>
-                                <TD>
-                                    <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Cisco Public IP XLSX file was last generated {{ cisco_data.xlsx_mod_time }} (UTC)</a>
-                                </TD>
-                                {% if cisco_data.has_log_file %}
-                                <TD>
-                                    <a href="{{ url_for('download_file', file_type='cisco_log') }}">Log file of most recent generation process from {{ cisco_data.log_mod_time }} (UTC)</a>
-                                </TD>
-                            {% endif %}
-                            </TR>
-                        </table>
-                    </div>
-                    <hr style="margin:3px 0">
-                    <div class="table-responsive">
-                        <table id="cisco-dashboard" class="display nowrap" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Index</th>
-                                    {% for cell in cisco_data.csv_data[0] %}
-                                        <th>{{ cell }}</th>
-                                    {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in cisco_data.csv_data[1:] %}
-                                    <tr>
-                                        <td>{{ loop.index }}</td>
-                                        {% for cell in row %}
-                                            <td>{{ cell }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
 
         <!-- Cloud Public IP Objects Report -->
         {% if cloud_data.has_files %}
@@ -201,7 +143,7 @@
 
             <div class="embedded-report">
                 <h3>Combined IP Addresses from All Sources</h3>
-                <p>This report shows all IP addresses from Prisma Access, Cisco, and Azure sources in a single table.</p>
+                <p>This report shows all IP addresses from Prisma Access and Cloud sources in a single table.</p>
 
                 <div class="table-responsive">
                     <table id="all-ips-dashboard" class="display nowrap" style="width:100%">
@@ -271,41 +213,6 @@
                     </div>
                 {% endif %}
 
-                {% if cisco_data.has_files %}
-                    <div class="embedded-report horizontal-report">
-                        <h3>Cisco Public IPs</h3>
-                        <div align="center">
-                            <a href="{{ url_for('download_file', file_type='cisco_csv') }}">Download CSV</a> | 
-                            <a href="{{ url_for('download_file', file_type='cisco_xlsx') }}">Download XLSX</a>
-                            {% if cisco_data.has_log_file %}
-                            | <a href="{{ url_for('download_file', file_type='cisco_log') }}">Download Log</a>
-                            {% endif %}
-                        </div>
-                        <hr style="margin:3px 0">
-                        <div class="table-responsive">
-                            <table id="cisco-all-dashboard" class="display nowrap" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>Index</th>
-                                        {% for cell in cisco_data.csv_data[0] %}
-                                            <th>{{ cell }}</th>
-                                        {% endfor %}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for row in cisco_data.csv_data[1:] %}
-                                        <tr>
-                                            <td>{{ loop.index }}</td>
-                                            {% for cell in row %}
-                                                <td>{{ cell }}</td>
-                                            {% endfor %}
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                {% endif %}
 
                 {% if cloud_data.has_files %}
                     <div class="embedded-report horizontal-report">
@@ -563,10 +470,6 @@
             pageLength: 10
         }));
 
-        // Initialize Cisco table
-        $('#cisco-dashboard').DataTable(Object.assign({}, commonConfig, {
-            pageLength: 10
-        }));
 
         // Initialize Cloud table
         $('#cloud-dashboard').DataTable(Object.assign({}, commonConfig, {
@@ -578,9 +481,6 @@
             pageLength: 10
         }));
 
-        $('#cisco-all-dashboard').DataTable(Object.assign({}, commonConfig, {
-            pageLength: 10
-        }));
 
         $('#cloud-all-dashboard').DataTable(Object.assign({}, commonConfig, {
             pageLength: 10

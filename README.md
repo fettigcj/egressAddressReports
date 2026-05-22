@@ -1,15 +1,14 @@
 # IP Reports Dashboard
 
-A Flask web application that displays and manages various IP address reports including Prisma Access Egress IPs, Cisco Public IPs, and Cloud Public IP Objects. The application provides interactive tables with advanced filtering, sorting, and pagination capabilities.
+A Flask web application that displays and manages various IP address reports including Prisma Access Egress IPs and Cloud Public IP Objects. The application provides interactive tables with advanced filtering, sorting, and pagination capabilities.
 
 ## Features
 
 - **Unified Dashboard**: View all reports in a single interface with tab navigation
 - **Multiple Report Types**:
   - Prisma Access Egress IPs (CSV and EDL formats)
-  - Cisco Public IPs (CSV and XLSX formats)
   - Cloud Public IP Objects (CSV format)
-  - Combined view of all IPs from all sources
+  - Combined view of all IPs from both sources
 - **Interactive Tables**:
   - Sorting: Click on column headers to sort data
   - Filtering: Click on funnel icons to filter columns
@@ -34,10 +33,8 @@ A Flask web application that displays and manages various IP address reports inc
 ## Usage
 
 1. Place your report files in the `reports` directory:
-   - `PrismaAccessEgressIPs.csv` and `PrismaAccessEgressIPs.edl` for Prisma Access reports
-   - `CiscoPublicIPs.csv` and `CiscoPublicIPs.xlsx` for Cisco reports
-   - `CloudEgressIPs.csv` for Cloud reports
-   - `RetrieveCiscoPublicIP.log` (optional) for Cisco retrieval logs
+- `PrismaAccessEgressIPs.csv` and `PrismaAccessEgressIPs.edl` for Prisma Access reports
+- `CloudEgressIPs.csv` for Cloud reports
 
 2. Run the application:
    ```
@@ -52,7 +49,6 @@ The application supports direct access to specific reports via URL:
 
 - `/` - All Reports view (default)
 - `/prismaaccess` - Prisma Access Egress IPs report
-- `/cisco` - Cisco Public IPs report
 - `/cloud` - Cloud Public IP Objects report
 - `/allips` - Combined view of all IPs
 
@@ -90,8 +86,6 @@ The application supports the following file formats:
 
 - **CSV**: Comma-separated values for all report types
 - **EDL**: External Dynamic List format for Prisma Access Egress IPs
-- **XLSX**: Excel format for Cisco Public IPs
-- **LOG**: Log files for Cisco IP retrieval process
 
 ## Customization
 
