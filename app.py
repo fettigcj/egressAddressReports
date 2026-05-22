@@ -151,12 +151,18 @@ def download_file(file_type):
     """Serve the file for download"""
     if file_type == 'prisma_csv':
         file_path = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.csv')
+        if not os.path.exists(file_path):
+            return render_template('error.html', error='Requested file not found'), 404
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
     elif file_type == 'prisma_edl':
         file_path = os.path.join(REPORTS_FOLDER, 'PrismaAccessEgressIPs.edl')
+        if not os.path.exists(file_path):
+            return render_template('error.html', error='Requested file not found'), 404
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/plain'}
     elif file_type == 'cloud_csv':
         file_path = os.path.join(REPORTS_FOLDER, 'CloudEgressIPs.csv')
+        if not os.path.exists(file_path):
+            return render_template('error.html', error='Requested file not found'), 404
         return open(file_path, 'r').read(), 200, {'Content-Type': 'text/csv'}
 
 if __name__ == '__main__':
