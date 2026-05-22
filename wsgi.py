@@ -15,3 +15,10 @@ if PROJECT_ROOT not in sys.path:
 
 # Import the Flask app object as `application`
 from app import app as application  # noqa: E402, F401
+
+# Optional: allow running this module directly for local testing
+if __name__ == '__main__':
+    # In production, a WSGI server imports `application`; this block is not used.
+    # For local/adhoc testing, you can run: `python wsgi.py`
+    port = int(os.environ.get('PORT', '5000'))
+    application.run(host='0.0.0.0', port=port, debug=False)
